@@ -3,6 +3,9 @@ package scrum.cannia.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "propietario")
 @Data
@@ -35,4 +38,6 @@ public class PropietarioModel {
     @Column(length = 45, nullable = false)
     private String correoPro;
 
+     @OneToMany(mappedBy = "propietario",cascade = CascadeType.ALL,orphanRemoval = true )
+     private List<MascotaModel> mascotas = new ArrayList<>();
 }
