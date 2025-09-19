@@ -140,7 +140,7 @@
 <!-- HEADER -->
 <header>
     <div class="logo">
-        <img src="../../static/img/logo.png" alt="logo">
+        <img src="/img/logo.png" alt="logo">
     </div>
     <nav class="links">
         <a href="('cerrar-sesion')">Cerrar sesión</a>
@@ -157,39 +157,39 @@
     <!-- Botón agregar propietario -->
 
     <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addPropietarioModal">
-        <img src= "../../static/img/nuevoo.png" alt="Agregar" width="40" height="40">
+        <img src= "/img/nuevoo.png" alt="Agregar" width="40" height="40">
         <span>Nuevo Propietario</span>
     </button>
 
      <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addMascotaModal">
-        <img src= "../../static/img/mascotaaa.png" alt="Agregar" width="40" height="40">
+        <img src= "/img/mascotaaa.png" alt="Agregar" width="40" height="40">
         <span>Nueva Mascota</span>
     </button>
 
     <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addOwnerModal">
-        <img src= "../../static/img/tienda.png" alt="Agregar" width="40" height="40">
+        <img src= "/img/tienda.png" alt="Agregar" width="40" height="40">
         <span>Veterinaria</span>
     </button>
 
     <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addOwnerModal">
-        <img src= "../../static/img/documento.png" alt="Agregar" width="40" height="40">
+        <img src= "/img/documento.png" alt="Agregar" width="40" height="40">
         <span>Historia Clinica</span>
     </button>
     <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addOwnerModal">
-        <img src= "../../static/img/citaapng.png" alt="Agregar" width="40" height="40">
+        <img src= "/img/citaapng.png" alt="Agregar" width="40" height="40">
         <span>Programar Cita</span>
     </button>
 
     <!-- Tarjetas de propietarios -->
     <div class="cards">
         <div class="card-owner" th:each="prop : ${propietarios}">
-            <span class="settings"><img src= "../../static/img/ajustes.png" alt="Editar" width="20" height="20"></span>
-            <h5 th:text="${prop.nombre} + ' ' + ${prop.apellido}"></h5>
-            <div th:each ="masc : $[prop.mascotas ">
+            <span class="settings"><img src= "/img/ajustes.png" alt="Editar" width="20" height="20"></span>
+            <h5 th:text="${prop.nombrePro} + ' ' + ${prop.apellidoPro}"></h5>
+            <div th:if="${prop.mascotas ! = null}" th:each ="masc : ${prop.mascotas} ">
                 <p th:text="$masc.nomMascota"></p>
                 <p th:text="$masc.color"></p>
                 <p th:text="$masc.raza"></p>
-            </div>
+            </divth>
             
         </div>
     </div>

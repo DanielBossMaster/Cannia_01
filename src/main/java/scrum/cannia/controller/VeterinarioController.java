@@ -48,10 +48,10 @@ public class VeterinarioController {
     @PostMapping("/nuevo")
     public String nuevo(@ModelAttribute PropietarioModel propietarioModel, BindingResult br) {
         if (br.hasErrors()) {
-            return "/veterinario/index";
+            return "veterinario/index";
         } else {
             propietarioRepository.save(propietarioModel);
-            return "/redirect:veterinario/index";
+            return "redirect:/veterinario";
         }
 
 
