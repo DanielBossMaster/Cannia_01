@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Historia Clínica Veterinaria</title>
+    <style>
+        /* ====== ESTILOS GENERALES ====== */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f3eaf8;
+        }
+
+        header {
+            background: linear-gradient(to right,#d600b9, #2c0045);
+            color: white;
+            padding: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 22px;
+            margin: 0;
+        }
+
+        .search-box {
+            background-color: white;
+            border-radius: 20px;
+            padding: 5px 10px;
+            display: flex;
+            align-items: center;
+            width: 40%;
+        }
+
+        .search-box input {
+            border: none;
+            outline: none;
+            flex: 1;
+            padding: 5px;
+        }
+
+        .search-box span {
+            color: #6a1b9a;
+            font-weight: bold;
+        }
+
+        main {
+            padding: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        /* ====== TARJETAS DE PROPIETARIOS ====== */
+        .card {
+            background-color: #c9a6df;
+            border-radius: 15px;
+            padding: 20px;
+            width: 280px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            color: black;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            font-size: 20px;
+        }
+
+        .card p {
+            margin: 5px 0;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background-color: #6a1b9a;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #4a0072;
+        }
+
+        /* ====== LISTA DE ANIMALES ====== */
+        .animal-list {
+            margin-top: 10px;
+            background-color: #b076d4;
+            border-radius: 10px;
+            padding: 10px;
+            display: none; /* Oculta la lista hasta que se despliegue */
+        }
+
+        .animal-item {
+            padding: 6px;
+            margin-bottom: 5px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .animal-item:hover {
+            background-color: #c9a6df;
+        }
+
+        .animal-item.active {
+            background-color: #8e24aa;
+            color: white;
+        }
+
+        /* ====== BOTONES OPCIONES (Vacunas, Historia) ====== */
+        .options {
+            margin-top: 10px;
+            display: none; /* Ocultas hasta seleccionar animal */
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .btn-success {
+            background-color:  #6a1b9a;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #b076d4;
+        }
+
+        .btn-info {
+            background-color: #6a1b9a;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background-color: #b076d4;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ====== BARRA SUPERIOR ====== -->
+<header>
+    <h1>Historia Clínica</h1>
+    <div class="search-box">
+
+        <input type="text" id="searchInput" placeholder="Ingrese el documento">
+    </div>
+    <h2>Veterinario</h2>
+</header>
+
+<!-- ====== CONTENIDO PRINCIPAL ====== -->
+<main id="ownersContainer">
+    <!-- Las tarjetas de propietarios se generan con JS -->
+</main>
+
+<script>
+    // ====== DATOS DE PRUEBA (Simulan la BD) ======
+    const owners = [
+        {
+            name: "Laura Toledo",
+            document: "1001068001",
+            phone: "3124519196",
+            email: "lauratole147@gmail.com",
+            animals: ["Kisha", "Nala", "Lucas", "Atila"]
+        },
+        {
+            name: "Jhon Suarez",
+            document: "1234567890",
+            phone: "3196501208",
+            email: "jhonsuarezbasto@gmail.com",
+            animals: ["Rocky", "Max"]
+        },
+        {
+            name: "Maryi Grajales",
+            document: "1090437654",
+            phone: "3202260107",
+            email: "grajalesmaryi2426@gmail.com",
+            animals: ["Luna", "Simba"]
+        }
+    ];
+
+    const ownersContainer = document.getElementById("ownersContainer");
+    const searchInput = document.getElementById("searchInput");
+
+    // ====== FUNCIÓN PARA MOSTRAR PROPIETARIOS ======
+    function displayOwners(list) {
+        ownersContainer.innerHTML = ""; // limpia el contenedor
+        list.forEach((owner, idx) => {
+            // Crear tarjeta
+            const card = document.createElement("div");
+            card.className = "card";
+
+            card.innerHTML = `
+          <h3>${owner.name}</h3>
+          <p><b>Documento:</b> ${owner.document}</p>
+          <p><b>Número:</b> ${owner.phone}</p>
+          <p><b>Correo:</b> ${owner.email}</p>
+          <button class="btn btn-primary">Consultar Animales</button>
+          <div class="animal-list"></div>
+          <div class="options">
+            <button class="btn btn-success"> Agregar vacuna</button>
+            <button class="btn btn-info"> Generar historia clínica</button>
+          </div>
+        `;
+
+            // Botón "Consultar Animales"
+            const animalBtn = card.querySelector(".btn-primary");
+            const animalList = card.querySelector(".animal-list");
+            const optionsDiv = card.querySelector(".options");
+
+            animalBtn.addEventListener("click", () => {
+                // Alternar mostrar/ocultar lista
+                animalList.style.display = animalList.style.display === "block" ? "none" : "block";
+                // Crear la lista de animales
+                if (animalList.innerHTML === "") {
+                    owner.animals.forEach(animal => {
+                        const item = document.createElement("div");
+                        item.className = "animal-item";
+                        item.textContent = animal;
+
+                        // Al hacer clic en un animal
+                        item.addEventListener("click", () => {
+                            // Quitar selección previa
+                            animalList.querySelectorAll(".animal-item").forEach(i => i.classList.remove("active"));
+                            item.classList.add("active");
+                            // Mostrar opciones
+                            optionsDiv.style.display = "flex";
+                        });
+
+                        animalList.appendChild(item);
+                    });
+                }
+            });
+
+            ownersContainer.appendChild(card);
+        });
+    }
+
+    // ====== FILTRO DE BÚSQUEDA POR DOCUMENTO ======
+    searchInput.addEventListener("input", () => {
+        const search = searchInput.value;
+        const filtered = owners.filter(o => o.document.includes(search));
+        displayOwners(filtered);
+    });
+
+    // Mostrar todos los propietarios al inicio
+    displayOwners(owners);
+</script>
+</body>
+</html>
