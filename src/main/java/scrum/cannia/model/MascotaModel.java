@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Table;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -30,9 +31,11 @@ public class MascotaModel {
     private String raza;
 
     @Column(name = "fecha_nacimiento")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fechaNacimiento;
 
     @Column(name = "fecha_vacunacion")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fechaVacunacion;
 
     @Column(length = 45)

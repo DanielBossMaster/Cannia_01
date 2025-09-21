@@ -15,6 +15,7 @@ import java.util.List;
 
 public class PropietarioModel {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_propietario")
