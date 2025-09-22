@@ -3,7 +3,10 @@
           font-family: Verdana, Geneva, Tahoma, sans-serif;
           margin: 0;
           padding: 0;
-          background-color: #f8f9fa;
+           background-color: #f1f1f1;
+                background-repeat: no-repeat; /* Evita que la imagen se repita */
+                background-size: cover;      /* Hace que la imagen cubra */
+                background-position: center;
         }
 
         /* HEADER */
@@ -32,45 +35,94 @@
           color: #ffffff;
         }
 
-        /* CARDS */
+        /* Contenedor de propietarios */
+        main {
+        aling-content:center;
+        }
+        .boton{
+        space  :between;
+        }
         .cards {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 20px;
-          justify-content: center;
-          margin: 20px auto;
-          max-width: 1100px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: flex-start; /* Alinea al inicio */
+            margin: 20px auto;
+            max-width: 1100px;
         }
 
+        /* Card de propietario */
         .card-owner {
-          position: relative;
-          width: 250px;
-          padding: 20px;
-          background: #fff;
-          border-radius: 12px;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-          text-align: center;
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
+            position: relative; /* Necesario para que el botón eliminar se posicione */
+            width: 260px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            text-align: left;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 10px; /* Separación interna entre elementos */
         }
 
         .card-owner:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
         }
 
-        .settings {
-          position: absolute;
-          top: 10px;
-          left: 10px;
-          cursor: pointer;
-          font-size: 18px;
+        /* Botón eliminar en la esquina superior derecha */
+        .card-owner .delete {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            padding: 0;
+            z-index: 10;
         }
-         .delete {
-          position: absolute;
-          top: 10px;
-          right: 10px;
-          cursor: pointer;
-          font-size: 18px;
+
+        /* Botón interno del propietario (abre modal) */
+        .card-owner button {
+            background: none;
+            border: none;
+            padding: 0;
+            text-align: left;
+            cursor: pointer;
+            color: #3f0d5c;
+        }
+
+        .card-owner button:hover {
+            color: #4A148C;
+        }
+
+        /* Texto del propietario */
+        .card-owner strong {
+            display: block;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .card-owner p {
+            margin: 2px 0;
+            font-size: 0.9rem;
+        }
+
+        /* Imagenes de iconos dentro de botones */
+        .card-owner img {
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
+        /* Ajuste de responsividad */
+        @media (max-width: 768px) {
+            .cards {
+                justify-content: center;
+            }
+            .card-owner {
+                width: 90%;
+            }
         }
 
         /* BOTONES */
@@ -129,4 +181,16 @@
             margin: 0 auto 20px auto;
 
         }
+
+
+.btn-secondary {
+  background-color: #6f42c1;
+  color: white;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.btn-secondary:hover {
+  background-color: #5a34a0;
+}
 

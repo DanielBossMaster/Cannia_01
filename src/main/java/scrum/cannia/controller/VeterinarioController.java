@@ -79,7 +79,33 @@ public class VeterinarioController {
         return "redirect:/veterinario";
     }
 
-}
+    @PostMapping("/borrarp/{id}")
+    public String borrarp(@PathVariable long id) {
+        propietarioRepository.deleteById(id);
+        return "redirect:/veterinario";
+    }
 
+    @PostMapping ("/editar/{id}")
+    public String actualizar(@PathVariable int id, @ModelAttribute PropietarioModel propietarioModel, BindingResult br) {
+        if (br.hasErrors()) {
+            return "veterinario/index";
+        } else {
+            propietarioModel.setId(id);
+            propietarioRepository.save(propietarioModel);
+            return"veterinario/index";
+        }
+    }
+
+    @PostMapping("/editarm/{id}")
+    public String actualizar(@PathVariable int id, @ModelAttribute MascotaModel mascotaModel, BindingResult br) {
+        if (br.hasErrors()) {
+            return "veterinario/index";
+        } else {
+            mascotaModel.setId(id);
+            mascotaRepository.save(mascotaModel);
+            return"veterinario/index";
+        }
+    }
+}
 
 
