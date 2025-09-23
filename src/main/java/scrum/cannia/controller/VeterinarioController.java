@@ -106,6 +106,12 @@ public class VeterinarioController {
             return"veterinario/index";
         }
     }
+
+    // Ruta para mostrar la vista de Historia Clínica
+    @GetMapping("/propietarioVH")
+    public String mostrarHistoriaClinica() {
+        return "veterinario/propietarioVH"; // carpeta/archivo en templates
+    }
 }
 
 

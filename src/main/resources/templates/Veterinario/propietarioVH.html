@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Historia Clínica Veterinaria</title>
+    <link rel="stylesheet" href="/css/VeterinarioCss/propietarioVH.css">
+
+    <a href="/veterinario/propietarioVH" class="btn btn-primary">
+        Historia Clínica
+    </a>
+
+</head>
+<body>
+
+<header>
+    <div class="logo">
+        <img src="/img/logo.png" alt="logo">
+    </div>
+
+    <h1>Historia Clínica</h1>
+    <div class="Barra">
+        <input type="text" id="searchInput" placeholder="Ingrese el documento">
+    </div>
+    <h2>Veterinario</h2>
+</header>
+
+<main id="ownersContainer"></main>
+
+
+<div id="historyModal" class="modal">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeModal()">X</button>
+        <h2 id="modalTitle">Generar historia</h2>
+        <div class="calendar">
+            <div>
+                <label><b>Fecha de inicio</b></label><br>
+                <input type="date" id="startDate">
+            </div>
+            <div>
+                <label><b>Fecha de fin</b></label><br>
+                <input type="date" id="endDate">
+            </div>
+        </div>
+        <button class="btn-generate" onclick="generateHistory()">Generar Historia Clínica</button>
+    </div>
+</div>
+
+<script>
+    //DATOS DE EJEMPLO
+    const owners = [
+        { name: "Laura Toledo", document: "1001068001", phone: "3124519196", email: "lauratole147@gmail.com", animals: ["Kisha","Nala","Lucas","Atila"] },
+        { name: "Jhon Suarez", document: "1234567890", phone: "3196501208", email: "jhonsuarezbasto@gmail.com", animals: ["Rocky","Max"] },
+        { name: "Maryi Grajales", document: "1090437654", phone: "3202260107", email: "grajalesmaryi2426@gmail.com", animals: ["Luna","Simba"] }
+    ];
+
+    const ownersContainer = document.getElementById("ownersContainer");
+    const searchInput = document.getElementById("searchInput");
+
+    // Modal
+    const modal = document.getElementById("historyModal");
+    const modalTitle = document.getElementById("modalTitle");
+
+    function openModal(animalName) {
+        modal.style.display = "flex";
+        modalTitle.textContent = `Generar historia de ${animalName}`;
+    }
+
+    function closeModal() {
+        modal.style.display = "none";
+    }
+
+    function generateHistory() {
+        const start = document.getElementById("startDate").value;
+        const end = document.getElementById("endDate").value;
+        if (!start || !end) {
+            alert("Por favor selecciona ambas fechas.");
+            return;
+        }
+        alert(`Generando historia clínica desde ${start} hasta ${end}`);
+        closeModal();
+    }
+
+    // Tarjetas de propietarios
+    function displayOwners(list) {
+        ownersContainer.innerHTML = "";
+        list.forEach(owner => {
+            const card = document.createElement("div");
+            card.className = "card";
+
+            card.innerHTML = `
+        <h3>${owner.name}</h3>
+        <p><b>Documento:</b> ${owner.document}</p>
+        <p><b>Número:</b> ${owner.phone}</p>
+        <p><b>Correo:</b> ${owner.email}</p>
+        <button class="btn btn-primary">Consultar Animales</button>
+        <div class="animal-list"></div>
+        <div class="options">
+          <button class="btn btn-success">Agregar vacuna</button>
+          <button class="btn btn-info">Generar historia clínica</button>
+        </div>
+      `;
+
+            const animalBtn = card.querySelector(".btn-primary");
+            const animalList = card.querySelector(".animal-list");
+            const optionsDiv = card.querySelector(".options");
+            const generateBtn = card.querySelector(".btn-info");
+
+            let selectedAnimal = null;
+
+            animalBtn.addEventListener("click", () => {
+                animalList.style.display = animalList.style.display === "block" ? "none" : "block";
+                if (animalList.innerHTML === "") {
+                    owner.animals.forEach(animal => {
+                        const item = document.createElement("div");
+                        item.className = "animal-item";
+                        item.textContent = animal;
+                        item.addEventListener("click", () => {
+                            animalList.querySelectorAll(".animal-item").forEach(i => i.classList.remove("active"));
+                            item.classList.add("active");
+                            selectedAnimal = animal;
+                            optionsDiv.style.display = "flex";
+                        });
+                        animalList.appendChild(item);
+                    });
+                }
+            });
+
+            // Botón "Generar historia clínica"
+            generateBtn.addEventListener("click", () => {
+                if (!selectedAnimal) {
+                    alert("Por favor selecciona un animal primero.");
+                    return;
+                }
+                openModal(selectedAnimal);
+            });
+
+            ownersContainer.appendChild(card);
+        });
+    }
+
+    // Filtro por documento
+    searchInput.addEventListener("input", () => {
+        const search = searchInput.value;
+        const filtered = owners.filter(o => o.document.includes(search));
+        displayOwners(filtered);
+    });
+
+    // Mostrar todos al inicio
+    displayOwners(owners);
+</script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f3eaf8;
+}
+
+header  {
+    background: linear-gradient(to right, #d600b9, #2c0045);
+    color: white;
+    padding: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header img {
+    width: 80px;
+    height: auto;
+}
+
+
+.Barra {
+    text-align: center;
+    background-color: white;
+    border-radius: 20px;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    width: 40%;
+}
+
+.Barra input {
+    border: none;
+    outline: none;
+    flex: 1;
+    padding: 5px;
+}
+
+main {
+    padding: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.card {
+    position: relative; /* Necesario para que el botón eliminar se posicione */
+    width: 260px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgb(176, 118, 212);
+    text-align: left;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Separación interna entre elementos */
+}
+
+.btn {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-primary { background-color: #6a1b9a;color: white; }
+.btn-success { background-color: #6a1b9a; color: white; }
+.btn-info { background-color: #6a1b9a; color: white; }
+
+.animal-list {
+    margin-top: 10px;
+    background-color: white;
+    box-shadow: 0 2px 8px rgb(176, 118, 212);
+    border-radius: 10px;
+    padding: 10px;
+    display: none;
+}
+
+.animal-item {
+    padding: 6px;
+    margin-bottom: 5px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.animal-item:hover { background-color: #ce93d8; }
+.animal-item.active { background-color: #8e24aa; color: white; }
+
+.options {
+    margin-top: 10px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    width: 400px;
+    text-align: center;
+}
+
+.modal h2 { margin-top: 0; }
+
+.calendar {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
+
+.calendar div {
+    flex: 1;
+    text-align: center;
+}
+
+.calendar input {
+    margin-top: 10px;
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.close-btn {
+    background: #d32f2f;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    float: right;
+}
+
+.btn-generate {
+    margin-top: 15px;
+    background: #6a1b9a;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+}
