@@ -113,11 +113,13 @@ public String actualizar(@PathVariable int id, @ModelAttribute MascotaModel masc
     }
 }
 
-// Ruta para mostrar la vista de Historia Clínica
-@GetMapping("/propietarioVH")
-public String mostrarHistoriaClinica() {
-    return "veterinario/propietarioVH"; // carpeta/archivo en templates
+    // Muestra la vista propietarioVH
+    @GetMapping("/propietarioVH")
+    public String mostrarPropietarioVH() {
+        return "veterinario/propietarioVH";
+    }
+
 }
-}
+
 
 

@@ -4,11 +4,6 @@
     <meta charset="UTF-8">
     <title>Historia Clínica Veterinaria</title>
     <link rel="stylesheet" href="/css/VeterinarioCss/propietarioVH.css">
-
-    <a href="/veterinario/propietarioVH" class="btn btn-primary">
-        Historia Clínica
-    </a>
-
 </head>
 <body>
 
@@ -16,7 +11,6 @@
     <div class="logo">
         <img src="/img/logo.png" alt="logo">
     </div>
-
     <h1>Historia Clínica</h1>
     <div class="Barra">
         <input type="text" id="searchInput" placeholder="Ingrese el documento">
@@ -26,27 +20,37 @@
 
 <main id="ownersContainer"></main>
 
-
+<!-- Modal para historia clínica -->
 <div id="historyModal" class="modal">
     <div class="modal-content">
         <button class="close-btn" onclick="closeModal()">X</button>
-        <h2 id="modalTitle">Generar historia</h2>
-        <div class="calendar">
+        <h2 id="modalTitle">Generar Historia Clínica</h2>
+
+        <!-- Formulario reducido -->
+        <form id="historyForm">
             <div>
-                <label><b>Fecha de inicio</b></label><br>
-                <input type="date" id="startDate">
+                <label><b>Diagnóstico</b></label><br>
+                <textarea id="diagnostico" name="diagnostico" rows="2" required></textarea>
             </div>
+
             <div>
-                <label><b>Fecha de fin</b></label><br>
-                <input type="date" id="endDate">
+                <label><b>Tratamiento</b></label><br>
+                <textarea id="tratamiento" name="tratamiento" rows="2" required></textarea>
             </div>
-        </div>
-        <button class="btn-generate" onclick="generateHistory()">Generar Historia Clínica</button>
+
+            <div>
+                <label><b>Fecha y Hora</b></label><br>
+                <input type="datetime-local" id="fechaHora" name="fechaHora" required>
+            </div>
+
+            <button type="submit" class="btn-generate">Generar Historia Clínica</button>
+        </form>
     </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-    //DATOS DE EJEMPLO
+    // Datos de ejemplo (propietarios, mascotas)
     const owners = [
         { name: "Laura Toledo", document: "1001068001", phone: "3124519196", email: "lauratole147@gmail.com", animals: ["Kisha","Nala","Lucas","Atila"] },
         { name: "Jhon Suarez", document: "1234567890", phone: "3196501208", email: "jhonsuarezbasto@gmail.com", animals: ["Rocky","Max"] },
@@ -60,25 +64,65 @@
     const modal = document.getElementById("historyModal");
     const modalTitle = document.getElementById("modalTitle");
 
-    function openModal(animalName) {
+    // Variables globales para guardar selección
+    let selectedOwner = null;
+    let selectedAnimal = null;
+
+    // Abrir modal con el nombre de la mascota
+    function openModal(owner, animalName) {
+        selectedOwner = owner;
+        selectedAnimal = animalName;
         modal.style.display = "flex";
-        modalTitle.textContent = `Generar historia de ${animalName}`;
+        modalTitle.textContent = `Historia de ${animalName}`;
     }
 
+    // Cerrar modal
     function closeModal() {
         modal.style.display = "none";
     }
 
-    function generateHistory() {
-        const start = document.getElementById("startDate").value;
-        const end = document.getElementById("endDate").value;
-        if (!start || !end) {
-            alert("Por favor selecciona ambas fechas.");
+    // Generar y descargar Excel
+    function generateExcel(event) {
+        event.preventDefault(); // Evitar recarga
+
+        // Tomar valores del formulario
+        const diagnostico = document.getElementById("diagnostico").value;
+        const tratamiento = document.getElementById("tratamiento").value;
+        const fechaHora = document.getElementById("fechaHora").value;
+
+        if (!diagnostico || !tratamiento || !fechaHora) {
+            alert("Por favor completa todos los campos.");
             return;
         }
-        alert(`Generando historia clínica desde ${start} hasta ${end}`);
+
+        // Datos en formato de tabla
+        const data = [
+            ["Historia Clínica Veterinaria"],
+            [],
+            ["Propietario", selectedOwner.name],
+            ["Documento", selectedOwner.document],
+            ["Teléfono", selectedOwner.phone],
+            ["Correo", selectedOwner.email],
+            ["Mascota", selectedAnimal],
+            [],
+            ["Fecha y Hora", fechaHora],
+            ["Diagnóstico", diagnostico],
+            ["Tratamiento", tratamiento]
+        ];
+
+        // Crear hoja de Excel
+        const ws = XLSX.utils.aoa_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Historia Clínica");
+
+        // Descargar archivo
+        XLSX.writeFile(wb, `Historia_${selectedAnimal}.xlsx`);
+
         closeModal();
     }
+
+    // Asociar evento al formulario
+    document.getElementById("historyForm").addEventListener("submit", generateExcel);
 
     // Tarjetas de propietarios
     function displayOwners(list) {
@@ -88,25 +132,26 @@
             card.className = "card";
 
             card.innerHTML = `
-        <h3>${owner.name}</h3>
-        <p><b>Documento:</b> ${owner.document}</p>
-        <p><b>Número:</b> ${owner.phone}</p>
-        <p><b>Correo:</b> ${owner.email}</p>
-        <button class="btn btn-primary">Consultar Animales</button>
-        <div class="animal-list"></div>
-        <div class="options">
-          <button class="btn btn-success">Agregar vacuna</button>
-          <button class="btn btn-info">Generar historia clínica</button>
-        </div>
-      `;
+                <h3>${owner.name}</h3>
+                <p><b>Documento:</b> ${owner.document}</p>
+                <p><b>Número:</b> ${owner.phone}</p>
+                <p><b>Correo:</b> ${owner.email}</p>
+                <button class="btn btn-primary">Consultar Animales</button>
+                <div class="animal-list"></div>
+                <div class="options">
+                  <button class="btn btn-success">Agregar vacuna</button>
+                  <button class="btn btn-info">Generar historia clínica</button>
+                </div>
+            `;
 
             const animalBtn = card.querySelector(".btn-primary");
             const animalList = card.querySelector(".animal-list");
             const optionsDiv = card.querySelector(".options");
             const generateBtn = card.querySelector(".btn-info");
 
-            let selectedAnimal = null;
+            let selectedAnimalTemp = null;
 
+            // Mostrar animales
             animalBtn.addEventListener("click", () => {
                 animalList.style.display = animalList.style.display === "block" ? "none" : "block";
                 if (animalList.innerHTML === "") {
@@ -117,7 +162,7 @@
                         item.addEventListener("click", () => {
                             animalList.querySelectorAll(".animal-item").forEach(i => i.classList.remove("active"));
                             item.classList.add("active");
-                            selectedAnimal = animal;
+                            selectedAnimalTemp = animal;
                             optionsDiv.style.display = "flex";
                         });
                         animalList.appendChild(item);
@@ -125,20 +170,20 @@
                 }
             });
 
-            // Botón "Generar historia clínica"
+            // Botón generar historia clínica
             generateBtn.addEventListener("click", () => {
-                if (!selectedAnimal) {
+                if (!selectedAnimalTemp) {
                     alert("Por favor selecciona un animal primero.");
                     return;
                 }
-                openModal(selectedAnimal);
+                openModal(owner, selectedAnimalTemp);
             });
 
             ownersContainer.appendChild(card);
         });
     }
 
-    // Filtro por documento
+    // Buscar por documento
     searchInput.addEventListener("input", () => {
         const search = searchInput.value;
         const filtered = owners.filter(o => o.document.includes(search));

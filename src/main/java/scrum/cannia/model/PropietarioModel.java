@@ -12,9 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 
-
 public class PropietarioModel {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
