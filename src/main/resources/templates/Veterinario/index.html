@@ -41,10 +41,10 @@
         <span>Veterinaria</span>
     </button>
 
-    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addOwnerModal">
+    <a th:href="@{/propietarioVH}" class="btn btn-primary mb-3">
         <img src= "/img/documento.png" alt="Historia clinica" width="40" height="40">
         <span>Historia Clinica</span>
-    </button>
+        </a>
     <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addOwnerModal">
         <img src= "/img/citaapng.png" alt="Citas" width="40" height="40">
         <span>Programar Cita</span>
@@ -54,32 +54,32 @@
 
             <h4>Propietarios</h4>
 
-                <div th:each="prop : ${propietarios}" class="btn btn-primary mb-3">
+                <div th:each="prop : ${propietarios}" class="mb-3">
 
-                 <!-- Botón de eliminar en la esquina superior derecha -->
+                 <!-- Boton borrar propietario -->
                     <div class="d-flex justify-content-end mb-2 gap-2">
                      <form method="post" th:action="@{/veterinario/borrarp/{id}(id=${prop.id})}">
                         <button type="submit" class="delete" onclick="return confirm('¿Desea Eliminar?')">
                             <img src="/img/delete.png" alt="Eliminar" height="20">
                         </button>
                      </form>
-
+                       <!-- boton Editar proppietario -->
                         <button class="delete" data-bs-toggle="modal" th:data-bs-target="'#editarPropietarioModal' + ${prop.id}" >
                             <img src="/img/ajustes.png" alt="Editar" height="20">
                         </button>
-
                     </div>
-                    <!-- Botón que abre el modal con información -->
-                    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" th:data-bs-target="'#modalMascotas' + ${prop.id}">
+
+
+                    <!-- Modal informaci onpropietario por id  -->
+                    <!-- Tambien muestra que mascotas tiene cada propietario  -->
+                    <button type="button" class="btn btn-primary " data-bs-toggle="modal" th:data-bs-target="'#modalMascotas' + ${prop.id}">
                         <strong th:text="${prop.nombrePro + ' ' + prop.apellidoPro}">Propietario</strong>
                         <p><strong>Telefono:</strong> <span th:text="${prop.telefonoPro}"></span></p>
                         <p><strong>Correo:</strong> <span th:text="${prop.correoPro}"></span></p>
                     </button>
 
-                     <div class="modal fade" th:id="'editarPropietarioModal' + ${prop.id}" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-
-
+                       <!-- Hasta aqui estoy bien  -->
+                    <!-- Modal que muestra infomacion de la mascota  -->
                     <div class="modal fade" th:id="'modalMascotas' + ${prop.id}" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-lg modal-dialog-centered">
                             <div class="modal-content">
@@ -87,23 +87,13 @@
                                     <h5 class="modal-title" th:text="'Mascotas de ' + ${prop.nombrePro}">Mascotas</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                 </div>
-                                <div class="modal-body">
+                                   <div class="modal-body">
                                     <div class="row" th:if="${prop.mascotas != null}">
                                         <div class="col-md-4 mb-3" th:each="masc : ${prop.mascotas}">
                                             <div class="card p-3 text-center">
                                                 <h6 th:text="${masc.nomMascota}">Nombre Mascota</h6>
                                                 <p><strong>Especie:</strong> <span th:text="${masc.especie}"></span></p>
                                                 <p><strong>Color:</strong> <span th:text="${masc.color}"></span></p>
-                                                <form method="post" th:action="@{/veterinario/borrar/{id}(id=${masc.id})}">
-                                                    <button type="submit" onclick="return confirm('¿Desea Eliminar?')" class="delete">
-                                                        <img src= "/img/eliminar.png" alt="Eliminar" height="20">
-                                                    </button>
-                                                </form>
-                                                <form method="post" th:action="@{/veterinario/editarm/{id}(id=${prop.id})}">
-                                                    <button type="submit" class="delete" onclick="return confirm('¿Desea Eliminar?')">
-                                                        <img src="/img/ajustes.png" alt="Editar" height="20">
-                                                    </button>
-                                                </form>
                                             </div>
                                         </div>
                                     </div>
@@ -115,10 +105,22 @@
                             </div>
                         </div>
                     </div>
-                </div>
 
 
+              <!-- <form method="post" th:action="@{/veterinario/borrar/{id}(id=${masc.id})}">
+                                                    <button type="submit" onclick="return confirm('¿Desea Eliminar?')" class="delete">
+                                                        <img src= "/img/eliminar.png" alt="Eliminar" height="20">
+                                                    </button>
+                                                </form>
+                                                <form method="post" th:action="@{/veterinario/editarm/{id}(id=${prop.id})}">
+                                                    <button type="submit" class="delete" onclick="return confirm('¿Desea Eliminar?')">
+                                                        <img src="/img/ajustes.png" alt="Editar" height="20">
+                                                    </button>
+                                                </form>
 
+--- Boton de editar propietario ---
+    <div class="modal fade" th:id="'editarPropietarioModal' + ${prop.id}" tabindex="-1" aria-hidden="true">
+    -->
 
     <!-- Modal para agregar propietario -->
 <div class="modal fade" id="addPropietarioModal" tabindex="-1" aria-hidden="true">

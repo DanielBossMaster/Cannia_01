@@ -30,88 +30,94 @@ public class VeterinarioController {
         this.veterinarioRepository = veterinarioRepository;
         this.mascotaRepository = mascotaRepository;
 
-    }
+//@GetMapping
+//public String hisClinica (Model model){
+    //       return "/"
 
-    @GetMapping
+}
 
-    public String index(Model model) {
-        model.addAttribute("veterinarios", veterinarioRepository.findAll());
-        model.addAttribute("propietarios", propietarioRepository.findAll());
-        model.addAttribute("mascotas", mascotaRepository.findAll());
-        model.addAttribute("propietario", new PropietarioModel());
-        model.addAttribute("mascota", new MascotaModel());
+
+
+@GetMapping
+
+public String index(Model model) {
+    model.addAttribute("veterinarios", veterinarioRepository.findAll());
+    model.addAttribute("propietarios", propietarioRepository.findAll());
+    model.addAttribute("mascotas", mascotaRepository.findAll());
+    model.addAttribute("propietario", new PropietarioModel());
+    model.addAttribute("mascota", new MascotaModel());
+    return "veterinario/index";
+
+
+}
+
+@PostMapping("/nuevo")
+public String nuevo(@Validated @ModelAttribute PropietarioModel propietarioModel, BindingResult br) {
+    if (br.hasErrors()) {
         return "veterinario/index";
-
-
-    }
-
-    @PostMapping("/nuevo")
-    public String nuevo(@Validated @ModelAttribute PropietarioModel propietarioModel, BindingResult br) {
-        if (br.hasErrors()) {
-            return "veterinario/index";
-        } else {
-            propietarioRepository.save(propietarioModel);
-            return "redirect:/veterinario";
-        }
-
-
-    }
-
-    @PostMapping("/nuevom")
-    public String agregarMascota(@ModelAttribute MascotaModel mascota,
-                                 @RequestParam long propietarioId) {
-
-        PropietarioModel propietario = propietarioRepository.findById((long) propietarioId)
-                .orElseThrow(() -> new IllegalArgumentException("No se encontro porpietario"));
-
-        mascota.setPropietario(propietario);
-        propietario.getMascotas().add(mascota);
-
-
-        mascotaRepository.save(mascota);
+    } else {
+        propietarioRepository.save(propietarioModel);
         return "redirect:/veterinario";
     }
 
 
-    @PostMapping("/borrar/{id}")
-    public String borrar(@PathVariable long id) {
-        mascotaRepository.deleteById(id);
-        return "redirect:/veterinario";
-    }
+}
 
-    @PostMapping("/borrarp/{id}")
-    public String borrarp(@PathVariable long id) {
-        propietarioRepository.deleteById(id);
-        return "redirect:/veterinario";
-    }
+@PostMapping("/nuevom")
+public String agregarMascota(@ModelAttribute MascotaModel mascota,
+                             @RequestParam long propietarioId) {
 
-    @PostMapping ("/editar/{id}")
-    public String actualizar(@PathVariable int id, @ModelAttribute PropietarioModel propietarioModel, BindingResult br) {
-        if (br.hasErrors()) {
-            return "veterinario/index";
-        } else {
-            propietarioModel.setId(id);
-            propietarioRepository.save(propietarioModel);
-            return"veterinario/index";
-        }
-    }
+    PropietarioModel propietario = propietarioRepository.findById((long) propietarioId)
+            .orElseThrow(() -> new IllegalArgumentException("No se encontro porpietario"));
 
-    @PostMapping("/editarm/{id}")
-    public String actualizar(@PathVariable int id, @ModelAttribute MascotaModel mascotaModel, BindingResult br) {
-        if (br.hasErrors()) {
-            return "veterinario/index";
-        } else {
-            mascotaModel.setId(id);
-            mascotaRepository.save(mascotaModel);
-            return"veterinario/index";
-        }
-    }
+    mascota.setPropietario(propietario);
+    propietario.getMascotas().add(mascota);
 
-    // Ruta para mostrar la vista de Historia Clínica
-    @GetMapping("/propietarioVH")
-    public String mostrarHistoriaClinica() {
-        return "veterinario/propietarioVH"; // carpeta/archivo en templates
+
+    mascotaRepository.save(mascota);
+    return "redirect:/veterinario";
+}
+
+
+@PostMapping("/borrar/{id}")
+public String borrar(@PathVariable long id) {
+    mascotaRepository.deleteById(id);
+    return "redirect:/veterinario";
+}
+
+@PostMapping("/borrarp/{id}")
+public String borrarp(@PathVariable long id) {
+    propietarioRepository.deleteById(id);
+    return "redirect:/veterinario";
+}
+
+@PostMapping ("/editar/{id}")
+public String actualizar(@PathVariable int id, @ModelAttribute PropietarioModel propietarioModel, BindingResult br) {
+    if (br.hasErrors()) {
+        return "veterinario/index";
+    } else {
+        propietarioModel.setId(id);
+        propietarioRepository.save(propietarioModel);
+        return"veterinario/index";
     }
+}
+
+@PostMapping("/editarm/{id}")
+public String actualizar(@PathVariable int id, @ModelAttribute MascotaModel mascotaModel, BindingResult br) {
+    if (br.hasErrors()) {
+        return "veterinario/index";
+    } else {
+        mascotaModel.setId(id);
+        mascotaRepository.save(mascotaModel);
+        return"veterinario/index";
+    }
+}
+
+// Ruta para mostrar la vista de Historia Clínica
+@GetMapping("/propietarioVH")
+public String mostrarHistoriaClinica() {
+    return "veterinario/propietarioVH"; // carpeta/archivo en templates
+}
 }
 
 

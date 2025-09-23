@@ -36,12 +36,7 @@
         }
 
         /* Contenedor de propietarios */
-        main {
-        aling-content:center;
-        }
-        .boton{
-        space  :between;
-        }
+        
         .cards {
             display: flex;
             flex-wrap: wrap;
@@ -137,9 +132,9 @@
         }
 
         .btn-primary:hover {
-          transform: translateY(-5px);
+          transform: translateY(-5px); /*<---- esta propiedad da la animacion de los botones*/
           box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-          background-color: #4A148C;
+          background-color: #863edf;
           border-color: #4A148C;
         }
 
