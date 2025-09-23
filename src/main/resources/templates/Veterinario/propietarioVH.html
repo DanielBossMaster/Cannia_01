@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Historia Clínica Veterinaria</title>
@@ -9,7 +9,7 @@
 
 <header>
     <div class="logo">
-        <img src="/img/logo.png" alt="logo">
+        <img src="/img/HistoriaClinica.png" alt="logo">
     </div>
     <h1>Historia Clínica</h1>
     <div class="Barra">
@@ -18,7 +18,30 @@
     <h2>Veterinario</h2>
 </header>
 
-<main id="ownersContainer"></main>
+<main id="ownersContainer">
+    <!-- Aquí se pintan propietarios desde Thymeleaf -->
+    <div th:each="propietario : ${propietarios}" class="card">
+        <h3 th:text="${propietario.nombrePro}"></h3>
+        <p><b>Documento:</b> <span th:text="${propietario.numDoc}"></span></p>
+        <p><b>Teléfono:</b> <span th:text="${propietario.telefonoPro}"></span></p>
+        <p><b>Correo:</b> <span th:text="${propietario.correoPro}"></span></p>
+        <button class="btn btn-primary"
+                th:attr="onclick=|toggleMascotas(${propietario.id})|">Consultar Animales</button>
+
+        <!-- Lista de mascotas -->
+        <div class="animal-list" th:id="'mascotas-' + ${propietario.id}" style="display:none;">
+            <div th:each="mascota : ${propietario.mascotas}" class="animal-item">
+                <p><b th:text="${mascota.nomMascota}"></b>
+                    (<span th:text="${mascota.especie}"></span>)</p>
+                <button class="btn btn-info"
+                        th:attr="onclick=|openModal(${propietario.id}, ${mascota.id})|">
+                    Generar historia clínica
+                </button>
+            </div>
+            <p th:if="${#lists.isEmpty(propietario.mascotas)}">Este propietario no tiene mascotas registradas</p>
+        </div>
+    </div>
+</main>
 
 <!-- Modal para historia clínica -->
 <div id="historyModal" class="modal">
@@ -26,54 +49,50 @@
         <button class="close-btn" onclick="closeModal()">X</button>
         <h2 id="modalTitle">Generar Historia Clínica</h2>
 
-        <!-- Formulario reducido -->
+        <!-- Formulario -->
         <form id="historyForm">
+            <div>
+                <label><b>Peso</b></label><br>
+                <textarea id="peso" name="peso" rows="1" required></textarea>
+            </div>
             <div>
                 <label><b>Diagnóstico</b></label><br>
                 <textarea id="diagnostico" name="diagnostico" rows="2" required></textarea>
             </div>
-
             <div>
                 <label><b>Tratamiento</b></label><br>
                 <textarea id="tratamiento" name="tratamiento" rows="2" required></textarea>
             </div>
-
             <div>
                 <label><b>Fecha y Hora</b></label><br>
                 <input type="datetime-local" id="fechaHora" name="fechaHora" required>
             </div>
-
             <button type="submit" class="btn-generate">Generar Historia Clínica</button>
         </form>
     </div>
 </div>
 
+<!-- Librería para exportar Excel -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
 <script>
-    // Datos de ejemplo (propietarios, mascotas)
-    const owners = [
-        { name: "Laura Toledo", document: "1001068001", phone: "3124519196", email: "lauratole147@gmail.com", animals: ["Kisha","Nala","Lucas","Atila"] },
-        { name: "Jhon Suarez", document: "1234567890", phone: "3196501208", email: "jhonsuarezbasto@gmail.com", animals: ["Rocky","Max"] },
-        { name: "Maryi Grajales", document: "1090437654", phone: "3202260107", email: "grajalesmaryi2426@gmail.com", animals: ["Luna","Simba"] }
-    ];
-
-    const ownersContainer = document.getElementById("ownersContainer");
-    const searchInput = document.getElementById("searchInput");
-
-    // Modal
     const modal = document.getElementById("historyModal");
     const modalTitle = document.getElementById("modalTitle");
-
-    // Variables globales para guardar selección
     let selectedOwner = null;
     let selectedAnimal = null;
 
-    // Abrir modal con el nombre de la mascota
-    function openModal(owner, animalName) {
-        selectedOwner = owner;
-        selectedAnimal = animalName;
+    // Mostrar/ocultar mascotas
+    function toggleMascotas(id) {
+        const div = document.getElementById("mascotas-" + id);
+        div.style.display = (div.style.display === "none") ? "block" : "none";
+    }
+
+    // Abrir modal
+    function openModal(ownerId, animalId) {
+        selectedOwner = ownerId;
+        selectedAnimal = animalId;
         modal.style.display = "flex";
-        modalTitle.textContent = `Historia de ${animalName}`;
+        modalTitle.textContent = `Historia Clínica - Mascota ID ${animalId}`;
     }
 
     // Cerrar modal
@@ -81,117 +100,39 @@
         modal.style.display = "none";
     }
 
-    // Generar y descargar Excel
-    function generateExcel(event) {
-        event.preventDefault(); // Evitar recarga
+    // Generar Excel
+    document.getElementById("historyForm").addEventListener("submit", function(event) {
+        event.preventDefault();
 
-        // Tomar valores del formulario
+        const peso = document.getElementById("peso").value;
         const diagnostico = document.getElementById("diagnostico").value;
         const tratamiento = document.getElementById("tratamiento").value;
         const fechaHora = document.getElementById("fechaHora").value;
 
-        if (!diagnostico || !tratamiento || !fechaHora) {
+        if (!peso || !diagnostico || !tratamiento || !fechaHora) {
             alert("Por favor completa todos los campos.");
             return;
         }
 
-        // Datos en formato de tabla
         const data = [
             ["Historia Clínica Veterinaria"],
             [],
-            ["Propietario", selectedOwner.name],
-            ["Documento", selectedOwner.document],
-            ["Teléfono", selectedOwner.phone],
-            ["Correo", selectedOwner.email],
-            ["Mascota", selectedAnimal],
-            [],
+            ["Propietario ID", selectedOwner],
+            ["Mascota ID", selectedAnimal],
+            ["Peso", peso],
             ["Fecha y Hora", fechaHora],
             ["Diagnóstico", diagnostico],
             ["Tratamiento", tratamiento]
         ];
 
-        // Crear hoja de Excel
         const ws = XLSX.utils.aoa_to_sheet(data);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Historia Clínica");
 
-        // Descargar archivo
         XLSX.writeFile(wb, `Historia_${selectedAnimal}.xlsx`);
-
         closeModal();
-    }
-
-    // Asociar evento al formulario
-    document.getElementById("historyForm").addEventListener("submit", generateExcel);
-
-    // Tarjetas de propietarios
-    function displayOwners(list) {
-        ownersContainer.innerHTML = "";
-        list.forEach(owner => {
-            const card = document.createElement("div");
-            card.className = "card";
-
-            card.innerHTML = `
-                <h3>${owner.name}</h3>
-                <p><b>Documento:</b> ${owner.document}</p>
-                <p><b>Número:</b> ${owner.phone}</p>
-                <p><b>Correo:</b> ${owner.email}</p>
-                <button class="btn btn-primary">Consultar Animales</button>
-                <div class="animal-list"></div>
-                <div class="options">
-                  <button class="btn btn-success">Agregar vacuna</button>
-                  <button class="btn btn-info">Generar historia clínica</button>
-                </div>
-            `;
-
-            const animalBtn = card.querySelector(".btn-primary");
-            const animalList = card.querySelector(".animal-list");
-            const optionsDiv = card.querySelector(".options");
-            const generateBtn = card.querySelector(".btn-info");
-
-            let selectedAnimalTemp = null;
-
-            // Mostrar animales
-            animalBtn.addEventListener("click", () => {
-                animalList.style.display = animalList.style.display === "block" ? "none" : "block";
-                if (animalList.innerHTML === "") {
-                    owner.animals.forEach(animal => {
-                        const item = document.createElement("div");
-                        item.className = "animal-item";
-                        item.textContent = animal;
-                        item.addEventListener("click", () => {
-                            animalList.querySelectorAll(".animal-item").forEach(i => i.classList.remove("active"));
-                            item.classList.add("active");
-                            selectedAnimalTemp = animal;
-                            optionsDiv.style.display = "flex";
-                        });
-                        animalList.appendChild(item);
-                    });
-                }
-            });
-
-            // Botón generar historia clínica
-            generateBtn.addEventListener("click", () => {
-                if (!selectedAnimalTemp) {
-                    alert("Por favor selecciona un animal primero.");
-                    return;
-                }
-                openModal(owner, selectedAnimalTemp);
-            });
-
-            ownersContainer.appendChild(card);
-        });
-    }
-
-    // Buscar por documento
-    searchInput.addEventListener("input", () => {
-        const search = searchInput.value;
-        const filtered = owners.filter(o => o.document.includes(search));
-        displayOwners(filtered);
     });
-
-    // Mostrar todos al inicio
-    displayOwners(owners);
 </script>
+
 </body>
 </html>

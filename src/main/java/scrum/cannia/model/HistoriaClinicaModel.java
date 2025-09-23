@@ -18,18 +18,24 @@ public class HistoriaClinicaModel {
     @Column(name = "id_historia_clinica")
     private Long idHistoriaClinica;
 
-    @Column(name = "fecha_hora", nullable = false)
-    private LocalDateTime fechaHora;  // ahora con hora incluida
+    /**
+     Relación con la mascota.
+     Esto te permite acceder a TODOS los campos de Mascota esde la historia clínica, es decir historia.getMascota().getNomMascota(), etc.
+     */
+    @ManyToOne(fetch = FetchType.EAGER) // EAGER para traer la mascota automáticamente
+    @JoinColumn(name = "id_mascota", nullable = false)
+    private MascotaModel mascota;
 
-    @Column(name = "tratamiento", length = 500, nullable = false)
-    private String tratamiento;
+    @Column(name = "fecha_hora", nullable = false)
+    private LocalDateTime fechaHora;
+
+    @Column(name = "anamnesis", length = 500, nullable = false)
+    private String anamnesis;
 
     @Column(name = "diagnostico", length = 500, nullable = false)
     private String diagnostico;
 
-    // Relación con Mascota (muchas historias -> una mascota)
-    @ManyToOne
-    @JoinColumn(name = "id_mascota", nullable = false)
-    private MascotaModel mascota;
-
+    @Column(name = "tratamiento", length = 500, nullable = false)
+    private String tratamiento;
 }
+

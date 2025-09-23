@@ -37,6 +37,7 @@ public class PropietarioModel {
     @Column(length = 45, nullable = false)
     private String correoPro;
 
-     @OneToMany(mappedBy = "propietario",cascade = CascadeType.ALL,orphanRemoval = true )
-     private List<MascotaModel> mascotas = new ArrayList<>();
+    // Relación con Mascota
+    @OneToMany(mappedBy = "propietario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MascotaModel> mascotas = new ArrayList<>();
 }
