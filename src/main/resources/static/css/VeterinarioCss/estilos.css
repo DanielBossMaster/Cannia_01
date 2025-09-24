@@ -133,9 +133,9 @@
 
         .btn-primary:hover {
           transform: translateY(-5px); /*<---- esta propiedad da la animacion de los botones*/
-          box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-          background-color: #863edf;
-          border-color: #4A148C;
+          box-shadow: 0 4px 12px rgb(94, 61, 104);
+          background-color: #5b09d6;
+          border-color: #5b09d6;
         }
 
         /* MODAL */

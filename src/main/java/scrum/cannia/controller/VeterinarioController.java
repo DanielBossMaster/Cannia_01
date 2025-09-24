@@ -1,5 +1,6 @@
 package scrum.cannia.controller;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,9 +31,6 @@ public class VeterinarioController {
         this.veterinarioRepository = veterinarioRepository;
         this.mascotaRepository = mascotaRepository;
 
-//@GetMapping
-//public String hisClinica (Model model){
-    //       return "/"
 
 }
 
@@ -91,15 +89,31 @@ public String borrarp(@PathVariable long id) {
     return "redirect:/veterinario";
 }
 
-@PostMapping ("/editar/{id}")
-public String actualizar(@PathVariable int id, @ModelAttribute PropietarioModel propietarioModel, BindingResult br) {
-    if (br.hasErrors()) {
-        return "veterinario/index";
-    } else {
-        propietarioModel.setId(id);
-        propietarioRepository.save(propietarioModel);
-        return"veterinario/index";
+
+@PostMapping("/editar/{id}")
+public String actualizar(@PathVariable Long id, @ModelAttribute PropietarioModel cambios) {
+    PropietarioModel existente = propietarioRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Propietario no encontrado"));
+
+    // Solo actualiza si el usuario ingresó algo
+    if (cambios.getNombrePro() != null && !cambios.getNombrePro().isBlank()) {
+        existente.setNombrePro(cambios.getNombrePro());
     }
+    if (cambios.getApellidoPro() != null && !cambios.getApellidoPro().isBlank()) {
+        existente.setApellidoPro(cambios.getApellidoPro());
+    }
+    if (cambios.getDireccionPro() != null && !cambios.getDireccionPro().isBlank()) {
+        existente.setDireccionPro(cambios.getDireccionPro());
+    }
+    if (cambios.getTelefonoPro() != null && !cambios.getTelefonoPro().isBlank()) {
+        existente.setTelefonoPro(cambios.getTelefonoPro());
+    }
+    if (cambios.getCorreoPro() != null && !cambios.getCorreoPro().isBlank()) {
+        existente.setCorreoPro(cambios.getCorreoPro());
+    }
+
+    propietarioRepository.save(existente);
+    return "redirect:/veterinario";
 }
 
 @PostMapping("/editarm/{id}")
