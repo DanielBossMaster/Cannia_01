@@ -1,16 +1,20 @@
+/* ===== Estilos globales ===== */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     background-color: #f3eaf8;
+    color: #333;
 }
 
-header  {
+/* ===== Encabezado ===== */
+header {
     background: linear-gradient(to right, #d600b9, #2c0045);
     color: white;
-    padding: 5px;
+    padding: 10px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 header img {
@@ -18,24 +22,31 @@ header img {
     height: auto;
 }
 
+header h1,
+header h2 {
+    margin: 0;
+}
 
+/* ===== Barra de búsqueda ===== */
 .Barra {
-    text-align: center;
     background-color: white;
     border-radius: 20px;
-    padding: 5px 10px;
+    padding: 5px 15px;
     display: flex;
     align-items: center;
     width: 40%;
+    min-width: 250px;
 }
 
 .Barra input {
     border: none;
     outline: none;
     flex: 1;
-    padding: 5px;
+    padding: 6px;
+    font-size: 14px;
 }
 
+/* ===== Contenido principal ===== */
 main {
     padding: 30px;
     display: flex;
@@ -44,39 +55,54 @@ main {
     justify-content: center;
 }
 
+/* ===== Tarjetas ===== */
 .card {
-    position: relative; /* Necesario para que el botón eliminar se posicione */
     width: 260px;
     padding: 20px;
     background: #fff;
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgb(176, 118, 212);
+    box-shadow: 0 2px 8px rgba(176, 118, 212, 0.6);
     text-align: left;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     display: flex;
     flex-direction: column;
-    gap: 10px; /* Separación interna entre elementos */
+    gap: 10px;
 }
 
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(176, 118, 212, 0.8);
+}
+
+/* ===== Botones ===== */
 .btn {
     display: block;
     width: 100%;
-    margin-top: 10px;
+    margin-top: 8px;
     padding: 10px;
     border: none;
     border-radius: 10px;
     cursor: pointer;
     font-weight: bold;
+    font-size: 14px;
+    transition: background 0.2s ease, transform 0.1s ease;
 }
 
-.btn-primary { background-color: #6a1b9a;color: white; }
+.btn:hover {
+    transform: scale(1.03);
+}
+
+/* Colores */
+.btn-primary { background-color: #6a1b9a; color: white; }
 .btn-success { background-color: #6a1b9a; color: white; }
 .btn-info { background-color: #6a1b9a; color: white; }
+.btn-secondary { background-color: #9e9e9e; color: white; }
 
+/* ===== Lista de mascotas ===== */
 .animal-list {
     margin-top: 10px;
-    background-color: white;
-    box-shadow: 0 2px 8px rgb(176, 118, 212);
+    background-color: #fafafa;
+    box-shadow: 0 2px 6px rgba(176, 118, 212, 0.4);
     border-radius: 10px;
     padding: 10px;
     display: none;
@@ -84,12 +110,13 @@ main {
 
 .animal-item {
     padding: 6px;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
     border-radius: 8px;
     cursor: pointer;
+    transition: background 0.2s;
 }
 
-.animal-item:hover { background-color: #ce93d8; }
+.animal-item:hover { background-color: #e1bee7; }
 .animal-item.active { background-color: #8e24aa; color: white; }
 
 .options {
@@ -99,44 +126,48 @@ main {
     gap: 8px;
 }
 
+/* ===== Modal ===== */
 .modal {
     display: none;
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0,0,0,0.6);
     justify-content: center;
     align-items: center;
+    z-index: 1000;
 }
 
 .modal-content {
     background: #fff;
-    padding: 20px;
+    padding: 25px;
     border-radius: 12px;
     width: 400px;
-    text-align: center;
+    max-width: 90%;
+    text-align: left;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    animation: fadeIn 0.3s ease;
 }
 
-.modal h2 { margin-top: 0; }
+.modal h2, .modal h3 {
+    margin-top: 0;
+    color: #6a1b9a;
+}
 
-.calendar {
+.modal-actions {
+    margin-top: 15px;
     display: flex;
-    justify-content: space-between;
-    margin: 20px 0;
+    justify-content: flex-end;
+    gap: 10px;
 }
 
-.calendar div {
-    flex: 1;
-    text-align: center;
+/* Animación modal */
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
 }
 
-.calendar input {
-    margin-top: 10px;
-    padding: 6px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-}
-
+/* Botón cerrar */
 .close-btn {
     background: #d32f2f;
     color: white;
@@ -144,16 +175,8 @@ main {
     padding: 8px 12px;
     border-radius: 8px;
     cursor: pointer;
-    float: right;
 }
 
-.btn-generate {
-    margin-top: 15px;
-    background: #6a1b9a;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    width: 100%;
+.close-btn:hover {
+    background: #b71c1c;
 }

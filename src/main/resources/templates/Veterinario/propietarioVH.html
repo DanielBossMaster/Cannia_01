@@ -30,47 +30,108 @@
 
         <!-- Lista de mascotas -->
         <div class="animal-list" th:id="'mascotas-' + ${propietario.id}" style="display:none;">
-            <div th:each="mascota : ${propietario.mascotas}" class="animal-item">
-                <p><b th:text="${mascota.nomMascota}"></b>
-                    (<span th:text="${mascota.especie}"></span>)</p>
-                <button class="btn btn-info"
-                        th:attr="onclick=|openModal(${propietario.id}, ${mascota.id})|">
-                    Generar historia clínica
-                </button>
+
+            <div th:each="mascota : ${propietario.mascotas}" class="animal-item"
+                 th:attr="onclick=|selectMascota(${propietario.id}, ${mascota.id})|">
+
+                <p>
+                    <b th:text="${mascota.nomMascota}"></b>
+                    (<span th:text="${mascota.especie}"></span>)
+                </p>
+
+                <!-- Opciones ocultas (solo aparecen al seleccionar mascota) -->
+                <div class="options" th:id="'options-' + ${mascota.id}" style="display:none; margin-top:10px;">
+                    <button class="btn btn-success"
+                            th:attr="onclick=|openModal('vacunaModal', '${propietario.id}', '${mascota.id}')|">
+                        Agregar vacuna
+                    </button>
+                    <button class="btn btn-info"
+                            th:attr="onclick=|openModal('historyModal', '${propietario.id}', '${mascota.id}')|">
+                        Generar historia clínica
+                    </button>
+                </div>
             </div>
-            <p th:if="${#lists.isEmpty(propietario.mascotas)}">Este propietario no tiene mascotas registradas</p>
+
+            <p th:if="${#lists.isEmpty(propietario.mascotas)}">
+                Este propietario no tiene mascotas registradas
+            </p>
         </div>
-    </div>
 </main>
 
-<!-- Modal para historia clínica -->
+<!-- Contenedor donde aparecen los botones -->
+<div id="accionesMascota" style="display:none; margin-top:10px;">
+    <button onclick="abrirModalVacuna()">Agregar vacuna</button>
+    <button onclick="abrirModalHistoria()">Generar historia clínica</button>
+</div>
+
+
+<!-- Modal Vacuna -->
+<div id="vacunaModal" class="modal">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeModal('historyModal')">X</button>
+        <h2>Agregar Vacuna - Mascota</h2>
+
+        <form method="post" th:action="@{/vacuna/guardar}">
+            <input type="hidden" id="vacunaPropietarioId" name="idPropietario">
+            <input type="hidden" id="vacunaMascotaId" name="idMascota">
+
+            <label>Lote:</label>
+            <input type="text" name="lote" required>
+
+            <label>Fecha Aplicación:</label>
+            <input type="date" name="fechaAplicacion" required>
+
+            <label>Fecha Refuerzo:</label>
+            <input type="date" name="fechaRefuerzo">
+
+            <label>Fecha Vencimiento:</label>
+            <input type="date" name="fechaVencimiento">
+
+            <label>Laboratorio:</label>
+            <input type="text" name="laboratorio">
+
+            <label>Tratamiento:</label>
+            <textarea name="tratamiento"></textarea>
+
+            <label>Nombre Veterinario:</label>
+            <input type="text" name="nombreVete" required>
+
+            <button type="submit" class="btn-generate">Guardar Vacuna</button>
+        </form>
+    </div>
+</div>
+
+
+<!-- Modal Historia Clínica -->
 <div id="historyModal" class="modal">
     <div class="modal-content">
-        <button class="close-btn" onclick="closeModal()">X</button>
-        <h2 id="modalTitle">Generar Historia Clínica</h2>
+        <button class="close-btn" onclick="closeModal('historyModal')">X</button>
+        <h2>Historia Clínica - Mascota</h2>
 
-        <!-- Formulario -->
-        <form id="historyForm">
-            <div>
-                <label><b>Peso</b></label><br>
-                <textarea id="peso" name="peso" rows="1" required></textarea>
-            </div>
-            <div>
-                <label><b>Diagnóstico</b></label><br>
-                <textarea id="diagnostico" name="diagnostico" rows="2" required></textarea>
-            </div>
-            <div>
-                <label><b>Tratamiento</b></label><br>
-                <textarea id="tratamiento" name="tratamiento" rows="2" required></textarea>
-            </div>
-            <div>
-                <label><b>Fecha y Hora</b></label><br>
-                <input type="datetime-local" id="fechaHora" name="fechaHora" required>
-            </div>
+        <form method="post" th:action="@{/historia/guardar}">
+            <input type="hidden" id="historiaPropietarioId" name="idPropietario">
+            <input type="hidden" id="historiaMascotaId" name="idMascota">
+
+            <label>Peso:</label>
+            <input type="number" step="0.01" name="peso" required>
+
+            <label>Anamnesis:</label>
+            <textarea name="anamnesis" required></textarea>
+
+            <label>Diagnóstico:</label>
+            <textarea name="diagnostico" required></textarea>
+
+            <label>Tratamiento:</label>
+            <textarea name="tratamiento" required></textarea>
+
+            <label>Fecha y Hora:</label>
+            <input type="datetime-local" name="fechaHora" required>
+
             <button type="submit" class="btn-generate">Generar Historia Clínica</button>
         </form>
     </div>
 </div>
+
 
 <!-- Librería para exportar Excel -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -88,12 +149,19 @@
     }
 
     // Abrir modal
-    function openModal(ownerId, animalId) {
-        selectedOwner = ownerId;
-        selectedAnimal = animalId;
-        modal.style.display = "flex";
-        modalTitle.textContent = `Historia Clínica - Mascota ID ${animalId}`;
+    function openModal(modalId, propietarioId, mascotaId) {
+        document.getElementById(modalId).style.display = "block";
+
+        if(modalId === "vacunaModal"){
+            document.getElementById("vacunaPropietarioId").value = propietarioId;
+            document.getElementById("vacunaMascotaId").value = mascotaId;
+        }
+        if(modalId === "historyModal"){
+            document.getElementById("historiaPropietarioId").value = propietarioId;
+            document.getElementById("historiaMascotaId").value = mascotaId;
+        }
     }
+
 
     // Cerrar modal
     function closeModal() {
@@ -106,10 +174,11 @@
 
         const peso = document.getElementById("peso").value;
         const diagnostico = document.getElementById("diagnostico").value;
+        const anamnesis = document.getElementById("anamnesis").value;
         const tratamiento = document.getElementById("tratamiento").value;
         const fechaHora = document.getElementById("fechaHora").value;
 
-        if (!peso || !diagnostico || !tratamiento || !fechaHora) {
+        if (!peso ||!anamnesis || !diagnostico || !tratamiento || !fechaHora) {
             alert("Por favor completa todos los campos.");
             return;
         }
@@ -117,10 +186,18 @@
         const data = [
             ["Historia Clínica Veterinaria"],
             [],
-            ["Propietario ID", selectedOwner],
-            ["Mascota ID", selectedAnimal],
+            ["Propietario", selectedOwner.nombre],
+            ["Documento", selectedOwner.documento],
+            ["Teléfono", selectedOwner.telefono],
+            ["Correo", selectedOwner.email],
+            ["Mascota", selectedAnimal.nomMascota],
+            ["Especie", selectedAnimal.especie],
+            ["Raza", selectedAnimal.raza],
+            ["Color", selectedAnimal.color],
+            [],
             ["Peso", peso],
             ["Fecha y Hora", fechaHora],
+            ["Anamnesis", anamnesis],
             ["Diagnóstico", diagnostico],
             ["Tratamiento", tratamiento]
         ];
@@ -132,6 +209,22 @@
         XLSX.writeFile(wb, `Historia_${selectedAnimal}.xlsx`);
         closeModal();
     });
+
+
+    function selectMascota(ownerId, mascotaId) {
+        // Oculta todas las opciones
+        document.querySelectorAll(".options").forEach(opt => opt.style.display = "none");
+
+        // Muestra solo las opciones de la mascota seleccionada
+        const options = document.getElementById("options-" + mascotaId);
+        if (options) {
+            options.style.display = "flex";
+            options.style.flexDirection = "column"; // botones en columna
+            options.style.gap = "8px"; // espacio entre botones
+        }
+    }
+
+
 </script>
 
 </body>

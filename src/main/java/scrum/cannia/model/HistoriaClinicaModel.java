@@ -29,6 +29,9 @@ public class HistoriaClinicaModel {
     @Column(name = "fecha_hora", nullable = false)
     private LocalDateTime fechaHora;
 
+    @Column(name = "peso", nullable = false)
+    private Float peso;
+
     @Column(name = "anamnesis", length = 500, nullable = false)
     private String anamnesis;
 
