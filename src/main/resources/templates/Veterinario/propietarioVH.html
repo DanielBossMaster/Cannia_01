@@ -25,8 +25,11 @@
         <p><b>Documento:</b> <span th:text="${propietario.numDoc}"></span></p>
         <p><b>Teléfono:</b> <span th:text="${propietario.telefonoPro}"></span></p>
         <p><b>Correo:</b> <span th:text="${propietario.correoPro}"></span></p>
+
         <button class="btn btn-primary"
-                th:attr="onclick=|toggleMascotas(${propietario.id})|">Consultar Animales</button>
+                th:attr="onclick=|toggleMascotas(${propietario.id})|">
+            Consultar Animales
+        </button>
 
         <!-- Lista de mascotas -->
         <div class="animal-list" th:id="'mascotas-' + ${propietario.id}" style="display:none;">
@@ -109,24 +112,26 @@
         <button class="close-btn" onclick="closeModal('historyModal')">X</button>
         <h2>Historia Clínica - Mascota</h2>
 
-        <form th:action="@{/guardarHistoria}" method="post">
+        <!--form id="historyForm" th:action="@{/guardarHistoria}" method="post" th:object="${historia}">-->
+        <form th:action="@{/guardarHistoria}" th:object="${historiaClinica}" method="post">
 
-        <input type="hidden" id="historiaMascotaId" name="idMascota">
+            <input type="hidden" name="mascotaId" th:value="${mascota.idMascota}" />
 
             <label>Peso:</label>
-            <input type="number" step="0.01" name="peso" required>
+            <input type="number" th:field="*{peso}" />
 
             <label>Anamnesis:</label>
-            <textarea name="anamnesis" required></textarea>
+            <textarea th:field="*{anamnesis}"></textarea>
 
             <label>Diagnóstico:</label>
-            <textarea name="diagnostico" required></textarea>
+            <textarea th:field="*{diagnostico}"></textarea>
 
             <label>Tratamiento:</label>
-            <textarea name="tratamiento" required></textarea>
+            <textarea th:field="*{tratamiento}"></textarea>
 
-            <label>Fecha y Hora:</label>
-            <input type="datetime-local" name="fechaHora" required>
+            <label for="fechaHora">Fecha y Hora:</label>
+            <input type="datetime-local" id="fechaHora" th:field="*{fechaHora}" />
+
 
             <button type="submit" class="btn-generate">Generar Historia Clínica</button>
         </form>

@@ -66,21 +66,32 @@ public class HistoriaClinicaController {
      */
 
     @PostMapping("/guardarHistoria")
-    public void guardarHistoria(HistoriaClinicaModel historia, HttpServletResponse response) throws IOException {
-        // 1. Guardar en la base de datos
+    public void guardarHistoria(
+            @ModelAttribute HistoriaClinicaModel historia,
+            @RequestParam("mascotaId") Long mascotaId,
+            HttpServletResponse response) throws IOException {
+
+        // 1. Buscar la mascota en la base de datos
+        MascotaModel mascota = mascotaRepository.findById(mascotaId)
+                .orElseThrow(() -> new RuntimeException("Mascota no encontrada"));
+
+        // 2. Asignar la mascota a la historia clínica
+        historia.setMascota(mascota);
+
+        // 3. Guardar en la base de datos
         historiaRepository.save(historia);
 
-        // 2. Configuración de la respuesta como archivo Excel
+        // 4. Configuración de la respuesta como archivo Excel
         response.setContentType("application/octet-stream");
         response.setHeader("Content-Disposition", "attachment; filename=historias_clinicas.xlsx");
 
-        // 3. Obtener todas las historias clínicas
+        // 5. Obtener todas las historias clínicas
         List<HistoriaClinicaModel> historias = historiaRepository.findAll();
 
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Historias Clínicas");
 
-// Encabezados
+        // Encabezados
         Row header = sheet.createRow(0);
         header.createCell(0).setCellValue("ID");
         header.createCell(1).setCellValue("Fecha y Hora");
@@ -90,7 +101,7 @@ public class HistoriaClinicaController {
         header.createCell(5).setCellValue("Tratamiento");
         header.createCell(6).setCellValue("Mascota");
 
-// Llenar filas
+        // Llenar filas
         int rowIdx = 1;
         for (HistoriaClinicaModel h : historias) {
             Row row = sheet.createRow(rowIdx++);
@@ -103,13 +114,14 @@ public class HistoriaClinicaController {
             row.createCell(6).setCellValue(h.getMascota().getNomMascota());      // Nombre mascota
         }
 
-        // 4. Escribir archivo en la respuesta
-        workbook.write(response.getOutputStream());
-        workbook.close();
-
+        // Ajustar tamaño de columnas
         for (int i = 0; i <= 6; i++) {
             sheet.autoSizeColumn(i);
         }
 
+        // 6. Escribir archivo en la respuesta
+        workbook.write(response.getOutputStream());
+        workbook.close();
     }
 }
+

@@ -1,15 +1,16 @@
 package scrum.cannia.controller;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import scrum.cannia.model.PropietarioModel;
 import scrum.cannia.repository.PropietarioRepository;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/propietarios")
+@Controller
+@RequestMapping("/propietarios")
 public class PropietarioController {
 
     private final PropietarioRepository propietarioRepository;
@@ -19,7 +20,9 @@ public class PropietarioController {
     }
 
     @GetMapping
-    public List<PropietarioModel> getAllPropietarios() {
-        return propietarioRepository.findAll();
+    public String listarPropietarios(Model model) {
+        List<PropietarioModel> propietarios = propietarioRepository.findAll();
+        model.addAttribute("propietarios", propietarios);
+        return "veterinario/propietarioVH"; // vista thymeleaf
     }
 }

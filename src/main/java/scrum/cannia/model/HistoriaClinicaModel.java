@@ -24,12 +24,9 @@ public class HistoriaClinicaModel {
      * Esto te permite acceder a los campos de Mascota desde la historia clínica,
      * ej: historia.getMascota().getNomMascota().
      */
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_mascota", nullable = false)
     private MascotaModel mascota;
-
-    @Column(name = "fecha_hora", nullable = false)
-    private LocalDateTime fechaHora = LocalDateTime.now();
 
     @Column(name = "peso", nullable = false)
     private Float peso;
@@ -42,5 +39,8 @@ public class HistoriaClinicaModel {
 
     @Column(name = "tratamiento", length = 1000, nullable = false)
     private String tratamiento;
+
+    @Column(name = "fecha_hora", nullable = false)
+    private LocalDateTime fechaHora = LocalDateTime.now();
 }
 
