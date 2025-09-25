@@ -1,9 +1,6 @@
 package scrum.cannia.model;
 
 import jakarta.persistence.*;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Table;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -14,20 +11,20 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class MascotaModel {
 
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column (name= "id_mascota")
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id_mascota")
     private int id;
 
-    @Column (length = 45,nullable = false)
-    private  String nomMascota;
+    @Column(length = 45, nullable = false)
+    private String nomMascota;
 
-    @Column(length = 45,nullable = false)
+    @Column(length = 45, nullable = false)
     private String especie;
 
-    @Column(length = 45,nullable = false)
+    @Column(length = 45, nullable = false)
     private String raza;
 
     @Column(name = "fecha_nacimiento")
@@ -45,12 +42,11 @@ public class MascotaModel {
     private String color;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 10,nullable = false)
+    @Column(length = 10, nullable = false)
     private Genero genero;
 
     @ManyToOne
-    @JoinColumn(name = "id_propietario",nullable = false)
+    @JoinColumn(name = "id_propietario", nullable = false)
     private PropietarioModel propietario;
-
 
 }

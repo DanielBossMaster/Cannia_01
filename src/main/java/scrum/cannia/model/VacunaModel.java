@@ -31,15 +31,9 @@ public class VacunaModel {
     @Column(name = "Laboratorio", length = 500, nullable = false)
     private String laboratorio;
 
-    @Column(name = "tratamiento", length = 500, nullable = false)
-    private String tratamiento;
-
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER) // EAGER para traer la mascota automáticamente
     @JoinColumn(name = "id_mascota", nullable = false)
     private MascotaModel mascota;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "nombre_vete", nullable = false)
-    private VeterinarioModel nombreVete	;
 
 }
