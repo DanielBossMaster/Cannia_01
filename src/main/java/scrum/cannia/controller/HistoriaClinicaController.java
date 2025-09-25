@@ -57,6 +57,8 @@ public class HistoriaClinicaController {
 
         model.addAttribute("propietario", propietario);
         model.addAttribute("mascotas", mascotas);
+        // 👇 agregar el objeto vacío para que el formulario no falle
+        model.addAttribute("historiaClinica", new HistoriaClinicaModel());
 
         return "veterinario/propietarioVH";
     }

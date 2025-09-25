@@ -105,7 +105,7 @@
     </div>
 </div>
 
-
+<div th:each="mascota : ${mascotas}">
 <!-- Modal Historia Clínica -->
 <div id="historyModal" class="modal">
     <div class="modal-content">
@@ -136,8 +136,8 @@
             <button type="submit" class="btn-generate">Generar Historia Clínica</button>
         </form>
     </div>
+ </div>
 </div>
-
 
 <!-- Librería para exportar Excel -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
