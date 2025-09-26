@@ -38,6 +38,6 @@ public class PropietarioModel {
     private String correoPro;
 
     // Relación con Mascota
-    @OneToMany(mappedBy = "propietario", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MascotaModel> mascotas = new ArrayList<>();
+    @OneToMany(mappedBy = "propietario", fetch = FetchType.EAGER) // Cambiar a EAGER
+    private List<MascotaModel> mascotas;
 }
