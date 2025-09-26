@@ -38,6 +38,21 @@ public class PropietarioController {
         this.excelExportService = excelExportService;
     }
 
+    @GetMapping("/listar")
+    public String listarPropietarios() {
+        return "propietarios/lista";
+    }
+
+    @GetMapping("/detalles/{id}")
+    public String verDetalles(@PathVariable Long id, Model model) {
+        return "propietarios/detalles";
+    }
+
+    @GetMapping("/mascotas")
+    public String verMascotas() {
+        return "propietarios/mascotas";
+    }
+
     /**
      * Guarda la vacuna
      */
