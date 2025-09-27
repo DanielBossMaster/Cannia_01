@@ -41,9 +41,27 @@ public class HistoriaClinicaController {
     /**
      * Guardar vacuna
      */
+//    @PostMapping("/guardarVacuna")
+//    public String guardarVacuna(VacunaModel vacuna) {
+//        vacunaRepository.save(vacuna);
+//        return "redirect:/veterinario/propietarioVH";
+//    }
+
     @PostMapping("/guardarVacuna")
-    public String guardarVacuna(VacunaModel vacuna) {
+    public String guardarVacuna(
+            @ModelAttribute VacunaModel vacuna,
+            @RequestParam("mascotaId") Long mascotaId) {
+
+        // Buscar la mascota
+        MascotaModel mascota = mascotaRepository.findById(mascotaId)
+                .orElseThrow(() -> new RuntimeException("Mascota no encontrada"));
+
+        // Relacionar la vacuna con la mascota
+        vacuna.setMascota(mascota);
+
+        // Guardar vacuna
         vacunaRepository.save(vacuna);
+
         return "redirect:/veterinario/propietarioVH";
     }
 
