@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Propietario</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Enlace al CSS externo -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Header -->
+<header>
+    <div class="d-flex align-items-center">
+        <img src="img/logo.png" alt="logo">
+        <h3 class="ms-3 text-white">Panel del Propietario</h3>
+    </div>
+    <div class="links">
+        <a href="logout.php">Cerrar sesión</a>
+    </div>
+</header>
+
+<!-- Botones -->
+<div class="container text-start my-4">
+    <button class="btn btn-primary">Registrar Mascota</button>
+    <button class="btn btn-primary">Tienda</button>
+</div>
+
+<!-- Mascotas registradas -->
+<div class="container">
+    <h3 class="mb-4 text-center">Mis Mascotas</h3>
+    <div class="cards">
+
+        <!-- Tarjeta de ejemplo mascota -->
+        <div class="card-owner">
+            <strong>Rocky</strong>
+            <p><b>Especie:</b> Perro</p>
+            <p><b>Raza:</b> Labrador</p>
+            <p><b>Edad:</b> 3 años</p>
+            <p><b>Peso:</b> 25 kg</p>
+            <button class="btn btn-primary">Editar Mascota</button>
+            <button class="btn btn-primary">Eliminar Mascota</button>
+            <button class="btn btn-primary">Ver Historia Clínica</button>
+        </div>
+
+        <!-- Otra mascota -->
+        <div class="card-owner">
+            <strong>Misu</strong>
+            <p><b>Especie:</b> Gato</p>
+            <p><b>Raza:</b> Persa</p>
+            <p><b>Edad:</b> 2 años</p>
+            <p><b>Peso:</b> 4 kg</p>
+            <button class="btn btn-primary">Editar Mascota</button>
+            <button class="btn btn-primary">Eliminar Mascota</button>
+            <button class="btn btn-primary">Ver Historia Clínica</button>
+        </div>
+
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <p>&copy; 2025 - Sistema de Gestión de Mascotas</p>
+</footer>
+
+</body>
+</html>
