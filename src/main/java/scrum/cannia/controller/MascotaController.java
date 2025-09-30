@@ -24,6 +24,11 @@ public class MascotaController {
     public MascotaController(MascotaRepository mascotaRepository, PropietarioRepository propietarioRepository) {
         this.mascotaRepository = mascotaRepository;
         this.propietarioRepository = propietarioRepository;
+
+    }
+    @GetMapping String index(Model model){
+        model.addAttribute("mascotas", mascotaRepository.findAll());
+        return "propietario/indexPropietario";
     }
 
     // Listar mascotas de un propietario
@@ -37,15 +42,24 @@ public class MascotaController {
         return "indexPropietario"; // Renderiza indexPropietario.html
     }
 
-    // Mostrar formulario para registrar mascota
     @GetMapping("/registrar/{idPropietario}")
-    public String mostrarFormularioRegistrar(@PathVariable("idPropietario") Long idPropietario, Model model) {
+    public String registrar(@PathVariable("idPropietario") Long idPropietario, Model model) {
         MascotaModel mascota = new MascotaModel();
         propietarioRepository.findById(idPropietario).ifPresent(mascota::setPropietario);
 
         model.addAttribute("mascota", mascota);
-        return "RegistrarMascota"; // Renderiza RegistrarMascota.html
+        return "FormularioMascota";
     }
+
+//     Mostrar formulario para registrar mascota
+//    @GetMapping("/registrar")
+//    public String registrar (@PathVariable("idPropietario") Long idPropietario, Model model) {
+//        MascotaModel mascota = new MascotaModel();
+//        propietarioRepository.findById(idPropietario).ifPresent(mascota::setPropietario);
+//
+//        model.addAttribute("mascota", mascota);
+//        return "RegistrarMascota"; // Renderiza RegistrarMascota.html
+//    }
 
     // Guardar mascota (crear o actualizar)
     @PostMapping("/guardar")
