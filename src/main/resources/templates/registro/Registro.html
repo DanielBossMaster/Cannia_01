@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Registro de Usuario</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/VeterinarioCss/estilosRegistro.css">
+
+    <style>
+        /* Ocultar secciones al inicio */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <div class="logo">
+        <img src="/img/logo.png" alt="logo">
+    </div>
+</header>
+
+<div class="container py-4">
+    <h2 class="text-center mb-4">Registro de Usuario</h2>
+
+    <!-- El objeto que se enviará al controlador -->
+    <form th:action="@{/templates/registro}" method="post" th:object="${registro}" class="card p-4 shadow">
+
+        <!-- Usuario y contraseña -->
+        <div class="mb-3">
+            <label for="usuario" class="form-label">Usuario</label>
+            <input type="text" id="usuario" th:field="*{usuario}" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="contrasena" class="form-label">Contraseña</label>
+            <input type="password" id="contrasena" th:field="*{contrasena}" class="form-control" required>
+        </div>
+
+        <!-- Selección de rol -->
+        <div class="mb-3">
+            <label for="rol" class="form-label">Selecciona tu rol:</label>
+            <select th:field="*{rol}" id="rol" class="form-select" required onchange="mostrarCamposAdicionales()">
+                <option value="">-- Selecciona --</option>
+                <option value="propietario">Propietario</option>
+                <option value="veterinario">Veterinario</option>
+            </select>
+        </div>
+
+        <!-- Campos Propietario -->
+        <div id="camposPropietario" class="hidden">
+            <div class="mb-3">
+                <label class="form-label">Número de Documento</label>
+                <input type="text" th:field="*{numDoc}" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Nombre</label>
+                <input type="text" th:field="*{nombre}" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Apellido</label>
+                <input type="text" th:field="*{apellido}" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Correo</label>
+                <input type="email" th:field="*{correo}" class="form-control">
+            </div>
+        </div>
+
+        <!-- Campos Veterinario -->
+        <div id="camposVeterinario" class="hidden">
+            <div class="mb-3">
+                <label class="form-label">Número de licencia profesional</label>
+                <input type="text" th:field="*{licencia}" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Nombre</label>
+                <input type="text" th:field="*{nombreVete}" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Apellido</label>
+                <input type="text" th:field="*{apellidoVete}" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Correo</label>
+                <input type="email" th:field="*{correoVete}" class="form-control">
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3 w-100">Registrarse</button>
+    </form>
+</div>
+
+<script>
+    function mostrarCamposAdicionales() {
+        const rol = document.getElementById("rol").value;
+        const camposProp = document.getElementById("camposPropietario");
+        const camposVet = document.getElementById("camposVeterinario");
+
+        // Ocultar ambos siempre
+        camposProp.classList.add("hidden");
+        camposVet.classList.add("hidden");
+
+        // Quitar required
+        document.querySelectorAll("#camposPropietario input, #camposVeterinario input").forEach(input => {
+            input.removeAttribute("required");
+        });
+
+        // Mostrar según selección
+        if (rol === "propietario") {
+            camposProp.classList.remove("hidden");
+            camposProp.querySelectorAll("input").forEach(input => input.setAttribute("required", "true"));
+        } else if (rol === "veterinario") {
+            camposVet.classList.remove("hidden");
+            camposVet.querySelectorAll("input").forEach(input => input.setAttribute("required", "true"));
+        }
+    }
+
+    // Inicializar al cargar la página
+    window.onload = function () {
+        mostrarCamposAdicionales();
+    };
+</script>
+
+<footer class="text-center mt-4">
+    <p>&copy; 2025 App Cannia. Todos los derechos reservados.</p>
+</footer>
+
+</body>
+</html>
