@@ -12,7 +12,7 @@ public class ViewController {
     public String panelPropietario(Model model) {
         // Aquí deberías cargar las mascotas del propietario logueado
         // Por ahora devolvemos la vista directamente
-        return "indexPropletario"; // Asegúrate que coincida con tu HTML
+        return "indexPropietario"; // Asegúrate que coincida con tu HTML
     }
 
     // Página de login

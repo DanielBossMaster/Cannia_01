@@ -27,31 +27,43 @@
 <main class="container py-4" >
     <!-- Botón agregar propietario -->
     <div class="d-flex justify-content-center gap-4">
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addPropietarioModal">
+    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
+            data-bs-target="#addPropietarioModal">
+        <div class="space-between gap-4">
         <img src= "/img/nuevoo.png" alt="nuevo propietario" width="40" height="40">
-        <span>Nuevo Propietario</span>
+        <p>Nuevo Propietario</p>
+        </div>
     </button>
 
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addMascotaModal">
+    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
+            data-bs-target="#addMascotaModal">
+        <div class="space-between gap-4">
         <img src= "/img/mascotaaa.png" alt="nueva mascota" width="40" height="40">
-        <span>Nueva Mascota</span>
+        <p>Nueva Mascota</p>
+        </div>
     </button>
 
     <button class="btn btn-primary mb-3" data-bs-toggle="modal" >
+        <div class="space-between gap-4">
         <img src= "/img/tienda.png" alt="Veterinaria" width="40" height="40">
-        <span>Veterinaria</span>
+        <p>Veterinaria</p>
+        </div>
     </button>
 
     <!-- botton de historia clinica -->
 
     <a th:href="@{/veterinario/propietarioVH}" class="btn btn-primary mb-3">
+        <div class="space-between gap-4" >
         <img src="/img/documento.png" alt="Historia clinica" width="40" height="40">
-        <span>Historia Clinica</span>
+        <p>Historia Clinica</p>
+        </div>
     </a>
 
     <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addOwnerModal">
+        <div class="space-between gap-4">
         <img src= "/img/citaapng.png" alt="Citas" width="40" height="40">
-        <span>Programar Cita</span>
+        <p>Programar Cita</p>
+        </div>
     </button>
     </div>
 
@@ -156,7 +168,7 @@
                         </div>
                     </form>
 
-
+<!-- commit -->
             </div>
         </div>
     </div>
