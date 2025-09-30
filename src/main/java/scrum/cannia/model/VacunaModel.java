@@ -15,9 +15,11 @@ import java.time.LocalDate;
 public class VacunaModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
     @Column(name = "Lote")
-    private Long Lote;
+    private String Lote;
 
     @Column(name = "Fecha_aplicacion", nullable = false)
     private LocalDate FechaAplicacion;
