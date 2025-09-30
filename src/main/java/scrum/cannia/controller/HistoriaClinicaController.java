@@ -1,6 +1,7 @@
 package scrum.cannia.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,10 @@ import scrum.cannia.repository.PropietarioRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook; // Para archivos .xlsx
 import org.apache.poi.ss.usermodel.Sheet;
@@ -41,19 +45,14 @@ public class HistoriaClinicaController {
     /**
      * Guardar vacuna
      */
-//    @PostMapping("/guardarVacuna")
-//    public String guardarVacuna(VacunaModel vacuna) {
-//        vacunaRepository.save(vacuna);
-//        return "redirect:/veterinario/propietarioVH";
-//    }
 
     @PostMapping("/guardarVacuna")
     public String guardarVacuna(
             @ModelAttribute VacunaModel vacuna,
-            @RequestParam("mascotaId") Long mascotaId) {
+            @RequestParam("idMascota") Long idMascota) {
 
         // Buscar la mascota
-        MascotaModel mascota = mascotaRepository.findById(mascotaId)
+        MascotaModel mascota = mascotaRepository.findById(idMascota)
                 .orElseThrow(() -> new RuntimeException("Mascota no encontrada"));
 
         // Relacionar la vacuna con la mascota
@@ -84,64 +83,25 @@ public class HistoriaClinicaController {
     /**
      * Guardar historia clínica
      */
-
     @PostMapping("/guardarHistoria")
-    public void guardarHistoria(
+    public ResponseEntity<Map<String, Object>> guardarHistoria(
             @ModelAttribute HistoriaClinicaModel historia,
-            @RequestParam("mascotaId") Long mascotaId,
-            HttpServletResponse response) throws IOException {
+            @RequestParam("mascotaId") Long mascotaId) {
 
-        // 1. Buscar la mascota en la base de datos
         MascotaModel mascota = mascotaRepository.findById(mascotaId)
                 .orElseThrow(() -> new RuntimeException("Mascota no encontrada"));
 
-        // 2. Asignar la mascota a la historia clínica
         historia.setMascota(mascota);
 
-        // 3. Guardar en la base de datos
-        historiaRepository.save(historia);
+        HistoriaClinicaModel historiaGuardada = historiaRepository.save(historia);
 
-        // 4. Configuración de la respuesta como archivo Excel
-        response.setContentType("application/octet-stream");
-        response.setHeader("Content-Disposition", "attachment; filename=historias_clinicas.xlsx");
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", historiaGuardada.getIdHistoriaClinica());
+        response.put("mensaje", "Historia guardada con éxito");
 
-        // 5. Obtener todas las historias clínicas
-        List<HistoriaClinicaModel> historias = historiaRepository.findAll();
-
-        Workbook workbook = new XSSFWorkbook();
-        Sheet sheet = workbook.createSheet("Historias Clínicas");
-
-        // Encabezados
-        Row header = sheet.createRow(0);
-        header.createCell(0).setCellValue("ID");
-        header.createCell(1).setCellValue("Fecha y Hora");
-        header.createCell(2).setCellValue("Peso");
-        header.createCell(3).setCellValue("Anamnesis");
-        header.createCell(4).setCellValue("Diagnóstico");
-        header.createCell(5).setCellValue("Tratamiento");
-        header.createCell(6).setCellValue("Mascota");
-
-        // Llenar filas
-        int rowIdx = 1;
-        for (HistoriaClinicaModel h : historias) {
-            Row row = sheet.createRow(rowIdx++);
-            row.createCell(0).setCellValue(h.getIdHistoriaClinica());            // ID
-            row.createCell(1).setCellValue(h.getFechaHora().toString());         // Fecha y hora
-            row.createCell(2).setCellValue(h.getPeso());                         // Peso
-            row.createCell(3).setCellValue(h.getAnamnesis());                    // Anamnesis
-            row.createCell(4).setCellValue(h.getDiagnostico());                  // Diagnóstico
-            row.createCell(5).setCellValue(h.getTratamiento());                  // Tratamiento
-            row.createCell(6).setCellValue(h.getMascota().getNomMascota());      // Nombre mascota
-        }
-
-        // Ajustar tamaño de columnas
-        for (int i = 0; i <= 6; i++) {
-            sheet.autoSizeColumn(i);
-        }
-
-        // 6. Escribir archivo en la respuesta
-        workbook.write(response.getOutputStream());
-        workbook.close();
+        return ResponseEntity.ok(response);
     }
+
+
 }
 

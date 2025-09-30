@@ -51,12 +51,6 @@
                         Generar historia clínica
                     </button>
 
-                    <!-- Botón para descargar Excel -->
-                    <button class="btn btn-warning" th:id="'download-' + ${mascota.id}"
-                            style="display: none;"
-                            th:attr="onclick=|downloadExcel('${mascota.id}')|">
-                        Descargar Excel
-                    </button>
                 </div>
             </div>
 
@@ -73,7 +67,7 @@
         <button class="close-btn" onclick="closeModal('vacunaModal')">X</button> <!-- Cambiado a vacunaModal -->
         <h2 id="vacunaModalTitle">Agregar Vacuna</h2>
 
-        <form th:action="@{/propietarios/guardarVacuna}" method="post" id="vacunaForm">
+        <form th:action="@{/guardarVacuna}" method="post" id="vacunaForm">
             <input type="hidden" id="vacunaPropietarioId" name="idPropietario">
             <input type="hidden" id="vacunaMascotaId" name="idMascota">
 
@@ -92,8 +86,6 @@
             <label>Laboratorio:</label>
             <input type="text" name="laboratorio">
 
-            <label>Nombre Veterinario:</label>
-            <input type="text" name="nombreVete" required>
 
             <div class="modal-buttons">
                 <button type="submit" class="btn-generate">Guardar Vacuna</button>
@@ -110,7 +102,7 @@
         <h2 id="historyModalTitle">Historia Clínica</h2>
 
         <!-- VERSIÓN SIMPLIFICADA - Sin th:object -->
-        <form id="historyForm" th:action="@{/propietarios/guardarHistoria}" method="post">
+        <form id="historyForm" th:action="@{/guardarHistoria}" method="post">
             <input type="hidden" id="mascotaId" name="mascotaId">
 
             <label>Peso (kg):</label>
@@ -158,20 +150,23 @@
     document.getElementById('vacunaForm').addEventListener('submit', function(event) {
         event.preventDefault();
 
+        // Validar campos
+        const formData = new FormData(this);
         // Validar campos requeridos
         const lote = this.querySelector('[name="lote"]').value;
         const fechaAplicacion = this.querySelector('[name="fechaAplicacion"]').value;
-        const nombreVete = this.querySelector('[name="nombreVete"]').value;
 
-        if (!lote || !fechaAplicacion || !nombreVete) {
-            alert('Por favor complete los campos requeridos (Lote, Fecha Aplicación, Nombre Veterinario)');
+        if (!lote || !fechaAplicacion ) {
+            alert('Por favor complete los campos requeridos (Lote, Fecha Aplicación');
             return;
         }
-
+        formData.forEach((valor, clave) => {
+            console.log(clave + ": " + valor);
+        });
         // Enviar formulario
         fetch(this.action, {
             method: 'POST',
-            body: new FormData(this)
+            body: formData
         })
             .then(response => {
                 if (response.ok) {
@@ -223,6 +218,9 @@
             alert('Por favor complete todos los campos');
             return;
         }
+        formData.forEach((valor, clave) => {
+            console.log(clave + ": " + valor);
+        });
 
         // Enviar formulario
         fetch(this.action, {
@@ -230,24 +228,17 @@
             body: formData
         })
             .then(response => {
-                if (response.ok) {
-                    historiaGuardada = true;
-                    alert('Historia clínica guardada exitosamente');
-                    closeModal('historyModal');
-
-                    // Mostrar botón de descarga
-                    const downloadBtn = document.getElementById('download-' + selectedMascotaId);
-                    if (downloadBtn) {
-                        downloadBtn.style.display = 'block';
-                    }
-
-                    // Recargar la página para ver los cambios
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1000);
-                } else {
-                    alert('Error al guardar la historia clínica');
+                if (!response.ok) {
+                    throw new Error("Error al guardar la historia");
                 }
+                return response.json();
+            })
+            .then(data => {
+                historiaGuardada = true;
+                alert('Historia clínica guardada exitosamente');
+                closeModal('historyModal')
+                console.log(data)
+                window.open('/propietarios/descargarHistoria/' + data.id, '_blank');
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -256,8 +247,8 @@
     });
 
     // Función para descargar Excel
-    function downloadExcel(mascotaId) {
-        window.open('/propietarios/descargarHistoria/' + mascotaId, '_blank');
+    function downloadExcel(historiaId) {
+        window.open('/propietarios/descargarHistoria/' + historiaId, '_blank');
     }
 
     // Funciones existentes
